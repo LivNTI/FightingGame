@@ -1,8 +1,10 @@
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Main {
     static Random randomGenerator = new Random();
+    static Scanner myScan = new Scanner(System.in); // Ansvarar för att läsa av tangentbordet
 
     public static void main(String[] args) {
         System.out.println("Welcome to my fighting game");
@@ -24,6 +26,22 @@ public class Main {
         System.out.println("Character 1 has " + stats1.get(0) + " hp and " + stats1.get(1) + " mana");
         System.out.println("Character 2 has " + stats2.get(0) + " hp and " + stats2.get(1) + " mana");
 
+        int choice = chooseCharacter();
+
+        //create the placeholders for the characters
+        ArrayList<Integer> mainCharacter;
+        ArrayList<Integer> enemy;
+        if (choice == 1) {
+            mainCharacter = stats1;
+            enemy = stats2;
+        } else {
+            mainCharacter = stats2;
+            enemy = stats1;
+        }
+
+        startGame(mainCharacter, enemy);
+
+        /*
         //character 1 hits character 2 with standard attack
         int newHP = standardAttack(stats1.get(2), stats2.get(0));
         stats2.set(0, newHP); // Puts the new HP to current HP in stats2
@@ -36,10 +54,62 @@ public class Main {
         System.out.println("Fighter number 2 now has " + stats2.get(0) + " HP");
         System.out.println("fighter 1 now has " + stats1.get(1) + " mana");
 
+         */
+
         //TODO: Fix game loop inseparate method
         //          Start with user interaction
         //          After let AI hit back with random choice
         //          IF time: Make Ai more clerver in attack coice
+    }
+
+    public static void startGame(ArrayList<Integer> mainCharacter, ArrayList<Integer> enemy) {
+        System.out.println("FIGHT START!");
+
+        while (mainCharacter.get(0) > 0 && enemy.get(0) > 0) {
+            int newHP = standardAttack(mainCharacter.get(2), enemy.get(0));
+            enemy.set(0, newHP); // Puts the new HP to current HP in stats2
+            System.out.println("Enemy now has " + enemy.get(0) + " HP");
+
+            newHP = standardAttack(enemy.get(2), mainCharacter.get(0));
+            mainCharacter.set(0, newHP); // Puts the new HP to current HP in stats2
+            System.out.println("You now has " + mainCharacter.get(0) + " HP");
+        }
+
+        if (mainCharacter.get(0) < 0) {
+            System.out.println("OH NO! The enemy won!");
+        } else {
+            System.out.println("YES! YOU WON!");
+        }
+    }
+
+
+    public static int chooseCharacter() {
+        boolean correct = false;
+        int choice;
+        do {
+            System.out.println("Do you want to play as character 1 or character 2? ");
+            String answer = myScan.nextLine();
+            try {
+                choice = Integer.valueOf(answer);
+                System.out.println("You chose character " + choice);
+            } catch (Exception e) {
+                System.out.println("that is not a number!");
+                choice = -1;
+            }
+            switch (choice) {
+                case 1:
+                    correct = true;
+                    break;
+                case 2:
+                    correct = true;
+                    break;
+                default:
+                    System.out.println("That is not a valid choice try again");
+            }
+        } while (!correct);
+
+
+        return choice;
     }
 
     //Method for standard attack
